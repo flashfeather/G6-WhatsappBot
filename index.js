@@ -18,18 +18,25 @@ client.on('ready', () => {
 });
 
 client.on('message', message => {
-    const msg = message.body.toLowerCase();
+    const msg = message.body.trim().toLowerCase();
 
-    if (msg === 'oi' || msg === 'olá') {
-        message.reply(
-            'Olá! 👋\n' +
-            'Sou o bot automático da G6 Cloud.\n\n' +
-            'Digite:\n' +
-            '1️⃣ Suporte\n' +
-            '2️⃣ Comercial\n' +
-            '3️⃣ Horário de atendimento'
-        );
-    }
+    console.log('Mensagem recebida:', msg);
+
+    // Ignora mensagens vazias
+    if (!msg) return;
+
+    // Resposta automática para QUALQUER mensagem
+    message.reply(
+        'Olá! 👋\n\n' +
+        'Sou o atendimento automático da *G6 Cloud*.\n\n' +
+        'Recebemos sua mensagem e em breve um especialista poderá falar com você.\n\n' +
+        'Enquanto isso, posso ajudar com:\n' +
+        '1️⃣ Serviços em nuvem (AWS / Oracle / Multicloud)\n' +
+        '2️⃣ Suporte técnico\n' +
+        '3️⃣ Falar com um especialista\n\n' +
+        'Responda com o número da opção desejada.'
+    );
+});
 
     if (msg === '1') {
         message.reply('🛠️ Suporte técnico: suporte@g6cloud.com');
