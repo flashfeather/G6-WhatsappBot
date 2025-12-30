@@ -1,0 +1,14 @@
+{
+  "name": "g6-whatsapp-bot",
+  "version": "1.0.0",
+  "description": "Bot automático de WhatsApp - G6 Cloud",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "puppeteer": "^22.8.2",
+    "whatsapp-web.js": "^1.25.0"
+  }
+}
