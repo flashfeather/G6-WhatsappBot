@@ -1,54 +1,110 @@
 const { Client, LocalAuth } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
 
+/**
+ * Inicialização do cliente WhatsApp
+ */
 const client = new Client({
     authStrategy: new LocalAuth(),
     puppeteer: {
         headless: true,
-        args: ['--no-sandbox', '--disable-setuid-sandbox']
+        args: [
+            '--no-sandbox',
+            '--disable-setuid-sandbox'
+        ]
     }
 });
 
+/**
+ * QR Code no terminal
+ */
 client.on('qr', qr => {
+    console.log('📱 Escaneie o QR Code abaixo:');
     qrcode.generate(qr, { small: true });
 });
 
+/**
+ * Bot pronto
+ */
 client.on('ready', () => {
     console.log('✅ Bot conectado e funcionando!');
 });
 
-client.on('message', message => {
-    const msg = message.body.trim().toLowerCase();
+/**
+ * Controle de primeira interação por usuário
+ * (em memória — reinicia se o bot reiniciar)
+ */
+const atendidos = new Set();
 
-    console.log('Mensagem recebida:', msg);
+/**
+ * Recebimento de mensagens
+ */
+client.on('message', async message => {
+    try {
+        const msg = message.body.trim();
+        const chatId = message.from;
 
-    // Ignora mensagens vazias
-    if (!msg) return;
+        console.log('📩 Mensagem recebida:', msg, 'de', chatId);
 
-    // Resposta automática para QUALQUER mensagem
-    message.reply(
-        'Olá! 👋\n\n' +
-        'Sou o atendimento automático da *G6 Cloud*.\n\n' +
-        'Recebemos sua mensagem e em breve um especialista poderá falar com você.\n\n' +
-        'Enquanto isso, posso ajudar com:\n' +
-        '1️⃣ Serviços em nuvem (AWS / Oracle / Multicloud)\n' +
-        '2️⃣ Suporte técnico\n' +
-        '3️⃣ Falar com um especialista\n\n' +
-        'Responda com o número da opção desejada.'
-    );
+        // PRIMEIRA MENSAGEM
+        if (!atendidos.has(chatId)) {
+            atendidos.add(chatId);
+
+            await message.reply(
+                'Olá! 👋\n\n' +
+                'Sou o atendimento automático da *G6 Cloud*.\n' +
+                'Como posso ajudar?\n\n' +
+                '1️⃣ Serviços em nuvem\n' +
+                '2️⃣ Suporte técnico\n' +
+                '3️⃣ Falar com um especialista'
+            );
+            return;
+        }
+
+        // OPÇÃO 1
+        if (msg === '1') {
+            await message.reply(
+                '☁️ *Serviços em nuvem*\n\n' +
+                '• Migração para AWS e Oracle\n' +
+                '• Otimização de custos\n' +
+                '• Segurança e arquitetura cloud'
+            );
+            return;
+        }
+
+        // OPÇÃO 2
+        if (msg === '2') {
+            await message.reply(
+                '🛠️ *Suporte técnico*\n\n' +
+                'Atendimento especializado para ambientes em nuvem.'
+            );
+            return;
+        }
+
+        // OPÇÃO 3
+        if (msg === '3') {
+            await message.reply(
+                '📞 *Contato com especialista*\n\n' +
+                'Um especialista da G6 Cloud entrará em contato em breve.'
+            );
+            return;
+        }
+
+        // QUALQUER OUTRA MENSAGEM
+        await message.reply(
+            '❗ Opção inválida.\n\n' +
+            'Por favor, responda com:\n' +
+            '1️⃣ Serviços em nuvem\n' +
+            '2️⃣ Suporte técnico\n' +
+            '3️⃣ Falar com um especialista'
+        );
+
+    } catch (error) {
+        console.error('❌ Erro ao processar mensagem:', error);
+    }
 });
 
-    if (msg === '1') {
-        message.reply('🛠️ Suporte técnico: suporte@g6cloud.com');
-    }
-
-    if (msg === '2') {
-        message.reply('💼 Comercial: comercial@g6cloud.com');
-    }
-
-    if (msg === '3') {
-        message.reply('⏰ Atendimento: Segunda a Sexta, das 9h às 18h');
-    }
-});
-
+/**
+ * Inicializa o bot
+ */
 client.initialize();
