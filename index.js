@@ -1,5 +1,5 @@
 const { Client, LocalAuth } = require('whatsapp-web.js');
-require('dotenv').config();
+const qrcode = require('qrcode-terminal');
 
 const client = new Client({
     authStrategy: new LocalAuth(),
@@ -10,8 +10,7 @@ const client = new Client({
 });
 
 client.on('qr', qr => {
-    console.log('📱 Escaneie o QR Code abaixo:');
-    console.log(qr);
+    qrcode.generate(qr, { small: true });
 });
 
 client.on('ready', () => {
