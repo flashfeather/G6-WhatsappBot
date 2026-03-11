@@ -219,7 +219,7 @@ client.on('message', async message => {
             await sendReply(
                 message,
                 '☁️ *Serviços em nuvem*\n\n' +
-                '• Migração para AWS e Oracle\n' +
+                '• Migração para Nuvem\n' +
                 '• Otimização de custos (FinOps)\n' +
                 '• Segurança e arquitetura\n\n' +
                 'Se quiser, descreva seu cenário em 1 frase.',
